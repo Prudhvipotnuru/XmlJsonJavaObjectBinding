@@ -1,17 +1,20 @@
-package com.prudhvi.xmlJson.controller;
+package com.prudhvi.xmlJson.controllers;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.hateoas.Link;
 
 import com.prudhvi.xmlJson.model.Passenger;
 import com.prudhvi.xmlJson.model.Ticket;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 public class ResController {
@@ -48,9 +51,20 @@ public class ResController {
 			value="/getTicket/{ticketId}",
 			produces={"application/xml","application/json"}
 	)
-	public Ticket getTicket(@PathVariable Integer ticketId) {
+	public EntityModel<Ticket> getTicket(@PathVariable Integer ticketId) {
 		Ticket ticket = map.get(ticketId);
-		return ticket;
+	    Link selfLink = linkTo(methodOn(ResController.class).getTicket(ticketId)).withSelfRel();
+	    Link selfsLink = linkTo(methodOn(ResController.class).getTickets()).withSelfRel();
+	    return EntityModel.of(ticket, selfLink ,selfsLink);
 	}
 	
+	@GetMapping(
+			value="/getTickets",
+			produces={"application/xml","application/json"}
+	)
+	public CollectionModel<Ticket> getTickets() {
+		
+	    Link selfLink = linkTo(methodOn(ResController.class).getTickets()).withSelfRel();
+	    return CollectionModel.of(map.values(), selfLink );
+	}
 }
