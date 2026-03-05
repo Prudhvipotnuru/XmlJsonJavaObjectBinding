@@ -1,6 +1,5 @@
 package com.prudhvi.xmlJson.controllers;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -32,9 +31,7 @@ public class ResController {
 	}
 	
 	@PostMapping(
-			value="/bookTicket",
-			produces={"application/xml","application/json"},
-			consumes={"application/xml","application/json"}
+			value="/bookTicket"
 	)
 	public Ticket bookTicket(@RequestBody Passenger passenger) {
 		Ticket t=new Ticket();
@@ -48,8 +45,7 @@ public class ResController {
 	}
 	
 	@GetMapping(
-			value="/getTicket/{ticketId}",
-			produces={"application/xml","application/json"}
+			value="/getTicket/{ticketId}"
 	)
 	public EntityModel<Ticket> getTicket(@PathVariable Integer ticketId) {
 		Ticket ticket = map.get(ticketId);
@@ -66,5 +62,11 @@ public class ResController {
 		
 	    Link selfLink = linkTo(methodOn(ResController.class).getTickets()).withSelfRel();
 	    return CollectionModel.of(map.values(), selfLink );
+	}
+	
+	@GetMapping("/getTicketFeign/{ticketId}")
+	public Ticket getTicketFeign(@PathVariable Integer ticketId) {
+		Ticket ticket = map.get(ticketId);
+		return ticket;
 	}
 }
